@@ -22,26 +22,16 @@ public:
     explicit Token_stream(istream& s) : ip{&s}, owns{false} { }
     explicit Token_stream(istream* p) : ip{p}, owns{true} { }
     ~Token_stream() { close(); }
-    Token get(); // read and return next token
-    Token& current(); // most recently read token
+    Token get();
+    Token& current();
     void set_input(istream& s) { close(); ip = &s; owns=false; }
     void set_input(istream* p) { close(); ip = p; owns = true; }
+
+
 private:
     void close() { if (owns) delete ip; }
-
-    //pointer to an input stream
-    //initialize the token_stream
-    //from where the token_stream gets the characters
     istream* ip;
-
-    //does the Token_stream own the istream?
-    //indicating ownership of the input stream
     bool owns;
-
-    //current token
-    //I chose Kind::end as the initial value for ct so
-    //that a program that misuses current()
-    // will not get a value that wasn’t on the input stream.
     Token ct {Kind::end};
 };
 

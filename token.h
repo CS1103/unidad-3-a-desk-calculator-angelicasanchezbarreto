@@ -17,17 +17,15 @@ enum class Kind : char  {
     print=';',
     assign='=',
     lp='(',
-    rp=')'
+    rp=')',
+    exp='^'
 };
 
 
-// A Token is a {kind-of-token,value} pair
-// such as {number,123.45}
-// where the 123.45 has been turned into a floating point value
 struct Token {
     Kind kind;
-    string string_value; //al leer un string lo guarda aqui
-    double number_value; //al leer un numero(int ,double) lo guarda aqui
+    string string_value;
+    double number_value;
 };
 
 #endif //CALCULATOR_TOKEN_H

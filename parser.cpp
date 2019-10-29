@@ -4,12 +4,15 @@
 
 double Parser::term(bool get)
 {
-    double left = prim(get); // multiply and divide
+    double left = prim(get);
     for (;;) { //infinite loop (while(true))
         switch (ts.current().kind) { //se ejecuta mientras se encuentren * o /
             case Kind::mul:
                 left *= prim(true);
-                break; //salir del switch
+                break;
+            case Kind::exp:
+                left *=prim(true);
+                break;
             case Kind::div:
                 if (auto d = prim(true)) {
                     left /= d;
@@ -23,11 +26,12 @@ double Parser::term(bool get)
 }
 
 
+
 double Parser::expr(bool get)
 {
-    double left = term(get); // add and subtract
-    for (;;) { //infinite loop (while(true))
-        switch (ts.current().kind) { //se ejecuta mientras se encuentren + o -
+    double left = term(get);
+    for (;;) {
+        switch (ts.current().kind) {
             case Kind::plus:
                 left += term(true);
                 break;
@@ -41,15 +45,15 @@ double Parser::expr(bool get)
 }
 
 
-
 // handling a primary is much like expr() and term()
 // except that because we are getting lower in the call hierarchy
 // a bit of real work is being done and no loop is necessary
-double Parser::prim(bool get) // handle primar ies
+
+double Parser::prim(bool get)
 {
-    if (get) ts.get(); // read next token
+    if (get) ts.get();
     switch (ts.current().kind) {
-        case Kind::number: // floating-point constant
+        case Kind::number:
         {
             double v = ts.current().number_value;
             ts.get();
@@ -57,17 +61,17 @@ double Parser::prim(bool get) // handle primar ies
         }
         case Kind::name:
         {
-            double& v = Table::table[ts.current().string_value]; // find the corresponding
-            if (ts.get().kind == Kind::assign) v = expr(true); // ’=’ seen: assignment
+            double& v = Table::table[ts.current().string_value];
+            if (ts.get().kind == Kind::assign) v = expr(true);
             return v;
         }
-        case Kind::minus: // unary minus
+        case Kind::minus:
             return -prim(true);
         case Kind::lp:
         {
             auto e = expr(true);
             if (ts.current().kind != Kind::rp) return Error::error("')' expected");
-            ts.get(); // eat ’)’
+            ts.get();
             return e;
         }
         default:
