@@ -37,10 +37,11 @@ Token Token_stream::get() {
             return ct;
         default: // name, name =, or error
             if (isalpha(ch)) {
+                ct.string_value = ch;
+                while(ip->get(ch) && isalnum(ch))
+                    ct.string_value += ch;
                 ip->putback(ch);
-                *ip>>ct.string_value; // put the first character back into the input stream
-                ct.kind = Kind::name; // read the string into ct
-                return ct;
+                return ct = {Kind::name};
             }
             Error::error("bad token");
             return ct={Kind::print};
