@@ -1,6 +1,7 @@
 //
 // Created by lica-pc on 10/29/19.
 //
+#include <cmath>
 
 double Parser::term(bool get)
 {
@@ -9,9 +10,6 @@ double Parser::term(bool get)
         switch (ts.current().kind) { //se ejecuta mientras se encuentren * o /
             case Kind::mul:
                 left *= prim(true);
-                break;
-            case Kind::exp:
-                left *=prim(true);
                 break;
             case Kind::div:
                 if (auto d = prim(true)) {
